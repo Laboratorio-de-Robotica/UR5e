@@ -1,0 +1,29 @@
+# URP es un lenguaje gráfico, no tiene versión de texto
+# Lo que sigue es un pseudocódigo para programar directamente sobre el teach pendant
+
+BeforeStart
+  open≔socket_open("192.168.0.20", 65432)
+ 	Loop open≟False
+   	open≔socket_open("192.168.0.20", 65432)
+    targetPos≔p[0,0,0.2,0,0,-0.1]  # altura 20 cm, orientación fija
+    counter≔0
+
+Robot Program
+ 	sendToServer≔'GET POS\n'
+ 	socket_send_string(sendToServer)
+ 	receiveFromServ≔socket_read_ascii_float(2)  # solicita 2 valores, x e y
+ 	Loop receiveFromServ[0]≠2
+   	Wait: 0.3
+   	receiveFromServ≔socket_read_ascii_float(2)
+
+ 	Loop counter<2
+   	targetPos[counter]=receiveFromServ[counter+1]
+   	counter≔counter+1
+
+ 	MoveJ targetPos
+  counter≔0
+
+  # En este punto se puede desarrollar el movimiento específico de picking
+  # incluyendo la operación del gripper
+  # seguido del traslado de la pieza a destino donde la deja
+  # finalizando con un movimiento a la zona de espera
