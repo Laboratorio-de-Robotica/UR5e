@@ -14,11 +14,23 @@ import time
 x=0.2
 y=0.0
 
-# Función que ejecuta el servidor TCP/IP
-def start_server():
-    HOST = '192.168.0.20'  # Dirección IP de este servidor
-    PORT = 65432           # Puerto donde escucha el servidor, un número inventado que no esté usado por otro servicio
+# Get this server IP address
+def get_my_ip_address(test="8.8.8.8"):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    myIP = ""
+    try:
+        sock.connect((test, 80))
+        myIP = sock.getsockname()[0]
+    finally:
+        sock.close()
+        return myIP
 
+# IP y puerto de escucha de este servidor TCP/IP
+HOST = get_my_ip_address() # Dirección IP de este servidor
+PORT = 65432           # Puerto donde escucha el servidor, un número inventado que no esté usado por otro servicio
+
+# Función que ejecuta el servidor TCP/IP en un hilo aparte
+def start_server():
     # Crear un socket TCP/IP
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
@@ -59,11 +71,13 @@ server_thread.start()
 
 # Programa principal continúa haciendo otras cosas
 print("Servidor en ejecución en segundo plano. El programa principal puede seguir trabajando.")
+print("Ctrl+c para detener el servidor y terminar el programa.")
 
 # Bucle principal donde se determinan las coordenadas x e y
 try:
     while True:
-        # Aquí se desarrolla el código de visión artificial que determina las coordenadas de picking
+        # Aquí se puede implementar el código de visión artificial que determina las coordenadas de picking
+        # ...
 
         # Simulación que alterna entre dos coordenadas
         x=0.5-x
