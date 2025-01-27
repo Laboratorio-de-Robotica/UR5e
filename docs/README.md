@@ -1,6 +1,6 @@
 # Código para UR5e
 
-<img align="right" width="100" height="100" src="/UR5e/assets/ur5e.png">
+<img align="right" src="/UR5e/assets/ur5e.png">
 
 - [Repositorio](https://github.com/Laboratorio-de-Robotica/UR5e)
 - [Sitio del robot](https://sites.google.com/ing.austral.edu.ar/jacobot/sobre-el-cobot/documentaci%C3%B3n?authuser=0)
