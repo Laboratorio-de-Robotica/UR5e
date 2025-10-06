@@ -1,0 +1,82 @@
+'''
+Biblioteca de comunicaciones TCP/IP con un publisher de coordenadas.
+Para ser invocada desde urp, en un proyecto de picking
+
+Autor: Alejandro Silvestri
+'''
+
+def suscribe(ip='192.168.0.101', port=34567, n=6, name='coords_publisher'):
+  '''
+  Se suscribe a un publisher de coordenadas.
+  Recibe mensajes con n valores float, en el formato previsto por socket_read_ascii_float:
+
+    "(0.4, 0, 0.5, 0, -3.14159, 0)\n"
+
+  Si el mensaje tiene menos valores, los valores faltantes se completan con ceros.
+  Si el mensaje tiene más valores, los valores sobrantes se descartan.
+
+  args:
+    ip: IP del publisher
+    port: Puerto del publisher
+    n: Cantidad de valores que se esperan recibir en cada mensaje (default=6)
+    name: Nombre del socket (default='coords_publisher')
+  
+  returns:
+    Devuelve True si la suscripción fue exitosa, False en caso contrario.
+
+  Define las variables globales:
+    socket_name: Nombre del socket
+    how_many_values_in_published_array: Cantidad de valores esperados en cada mensaje
+
+  
+  '''
+  success = socket_open(ip, port, name)
+  if success:
+    return False
+  end
+
+  success = socket_send_string('SUBSCRIBE POS\n', name)
+  if success:
+    return False
+  end
+
+  global socket_name
+  socket_name = name
+
+  global how_many_values_in_published_array
+  how_many_values_in_published_array = n
+
+  return True
+end
+
+def read():
+  '''
+  Lee datos del socket. Si no hay datos, devuelve False.
+  La cantidad de valores esperados se define en la suscripción.
+  No chequea que la cantidad de datos recibidos sea la esperada.
+
+  returns:
+    False si no hay datos
+    Array de floats con los datos recibidos si hay datos
+    Por conveniencia elimina el primer elemento de socket_read_ascii_float que indica la cantidad de valores recibidos.
+  '''
+  message = socket_read_ascii_float(how_many_values_in_published_array, socket_name)
+  if message[0] == 0:
+    # No hay datos
+    return False
+  else:
+    return message[1:]
+  end
+end
+
+def blocking_read():
+  '''
+  Lectura bloqueante. Espera hasta recibir datos.
+  '''
+  while True:
+    message = read()
+    if message != False:
+      return message
+    sleep(0.5)
+  end
+end

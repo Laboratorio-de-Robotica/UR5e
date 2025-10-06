@@ -1,0 +1,5 @@
+BeforeStart
+  Script: picking.Script
+  suscribe(ip, port)
+
+Robot Program
